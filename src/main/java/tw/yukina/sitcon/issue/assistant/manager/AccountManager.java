@@ -1,6 +1,6 @@
-package tw.yukina.sitcon.issue.assistant.service;
+package tw.yukina.sitcon.issue.assistant.manager;
 
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import tw.yukina.sitcon.issue.assistant.constants.Role;
 import tw.yukina.sitcon.issue.assistant.entity.account.User;
 import tw.yukina.sitcon.issue.assistant.repository.GroupRepository;
@@ -8,7 +8,7 @@ import tw.yukina.sitcon.issue.assistant.repository.UserRepository;
 
 import java.util.Set;
 
-@Service
+@Component
 public class AccountManager {
 
     private UserRepository userRepository;
@@ -19,17 +19,15 @@ public class AccountManager {
         this.groupRepository = groupRepository;
     }
 
-    public User getUserByTG(String telegramUserId){
+    public User getUserByTG(int telegramUserId){
         return userRepository.findByTelegramUserId(telegramUserId);
     }
 
-    public User getUserByGitLab(String gitLabUserId){
+    public User getUserByGitLab(int gitLabUserId){
         return userRepository.findByGitLabUserId(gitLabUserId);
     }
 
     public Set<User> getAllUser(Role role){
         return userRepository.findAllByRole(role);
     }
-
-
 }

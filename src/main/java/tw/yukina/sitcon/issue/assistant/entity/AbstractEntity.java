@@ -1,8 +1,6 @@
 package tw.yukina.sitcon.issue.assistant.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 import lombok.Getter;
@@ -12,6 +10,7 @@ import lombok.Getter;
 public class AbstractEntity {
     @Id
     @Column(unique = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
     private String id;
 }

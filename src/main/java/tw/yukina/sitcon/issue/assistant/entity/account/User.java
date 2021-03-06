@@ -1,7 +1,6 @@
 package tw.yukina.sitcon.issue.assistant.entity.account;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import tw.yukina.sitcon.issue.assistant.constants.Role;
 import tw.yukina.sitcon.issue.assistant.entity.AbstractEntity;
 
@@ -12,6 +11,9 @@ import javax.validation.constraints.NotNull;
 @Entity
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class User extends AbstractEntity {
 
     @NotNull
@@ -20,11 +22,11 @@ public class User extends AbstractEntity {
 
     @NotNull
     @Column(unique = true)
-    private String telegramUserId;
+    private int telegramUserId;
 
     @NotNull
     @Column(unique = true)
-    private String gitLabUserId;
+    private int gitLabUserId;
 
     @NotNull
     private Role role;

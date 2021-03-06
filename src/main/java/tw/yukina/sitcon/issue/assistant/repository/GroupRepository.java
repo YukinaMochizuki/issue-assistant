@@ -6,5 +6,5 @@ import tw.yukina.sitcon.issue.assistant.entity.account.Group;
 
 @Repository
 public interface GroupRepository extends JpaRepository<Group, Long> {
-    Group findByChatId(String id);
+    Group findByChatId(int id);
 }
