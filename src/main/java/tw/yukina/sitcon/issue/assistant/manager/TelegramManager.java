@@ -4,17 +4,23 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import tw.yukina.sitcon.issue.assistant.command.Command;
+import picocli.CommandLine;
+import tw.yukina.sitcon.issue.assistant.command.AbstractAssistantCommand;
+import tw.yukina.sitcon.issue.assistant.command.system.HelpCommand;
+import tw.yukina.sitcon.issue.assistant.command.system.TestPicocliCommand;
 import tw.yukina.sitcon.issue.assistant.config.TelegramConfig;
-import tw.yukina.sitcon.issue.assistant.constants.CommandType;
+import tw.yukina.sitcon.issue.assistant.util.MessageSupplier;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.Set;
 
 @Component
 public class TelegramManager {
 
-    private final Set<Command> commands;
+    private final Set<AbstractAssistantCommand> assistantCommands;
 
     private final TelegramPermissionManager telegramPermissionManager;
 
@@ -23,8 +29,16 @@ public class TelegramManager {
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
     private TelegramConfig telegramConfig;
 
-    public TelegramManager(Set<Command> command, TelegramPermissionManager telegramPermissionManager) {
-        this.commands = command;
+    @Autowired
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    private TestPicocliCommand testPicocliCommand;
+
+    @Autowired
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    private HelpCommand helpCommand;
+
+    public TelegramManager(Set<AbstractAssistantCommand> assistantCommands, TelegramPermissionManager telegramPermissionManager) {
+        this.assistantCommands = assistantCommands;
         this.telegramPermissionManager = telegramPermissionManager;
     }
 
@@ -62,22 +76,40 @@ public class TelegramManager {
                 parameter.add(message.substring(1));
             }
 
-            System.out.println(parameter.toString());
+            Optional<AbstractAssistantCommand> assistantCommandOptional =
+                    assistantCommands.stream().filter(command -> parameter.get(0).equals(command.getCommandName())).findAny();
 
-            for(Command command: commands){
-                System.out.println(command.getCommandName());
+            if(assistantCommandOptional.isPresent()) {
+                AbstractAssistantCommand assistantCommand = assistantCommandOptional.get();
 
-                if(command.getCommandName().compareTo(parameter.get(0)) == 0 &&
-                        command.getCommandType().compareTo(CommandType.COMMAND) == 0){
-                    if(update.getMessage().getChat().isUserChat() &&
-                            telegramPermissionManager.checkUser(update.getMessage().getFrom().getId(), command)){
-                        telegramConfig.sendMessage(command.exec(update, parameter));
-                    }
+                if(update.getMessage().getChat().isUserChat() &&
+                        telegramPermissionManager.checkUser(update.getMessage().getFrom().getId(), assistantCommand)) {
+
+                    StringWriter out = new StringWriter();
+                    PrintWriter writer = new PrintWriter(out);
+
+                    parameter.remove(0);
+                    parameter.add(0, "--ChatId");
+                    parameter.add(1, String.valueOf(update.getMessage().getFrom().getId()));
+                    String[] args = parameter.toArray(new String[0]);
+
+                    new CommandLine(assistantCommand).setOut(writer).setErr(writer).execute(args);
+
+                    String result = out.toString();
+                    if (!result.isEmpty())
+                        telegramConfig.sendMessage(MessageSupplier.getMarkdownFormatBuilder()
+                                .chatId(parameter.get(1))
+                                .text(result)
+                                .build());
+
+                    writer.close();
                 }
+            }else {
+                telegramConfig.sendMessage(MessageSupplier.getMarkdownFormatBuilder()
+                        .chatId(String.valueOf(update.getMessage().getFrom().getId()))
+                        .text("Command Not Found, please type /help for usage info.")
+                        .build());
             }
-
         }//else conversationManager.communicate(input);
-
-
     }
 }

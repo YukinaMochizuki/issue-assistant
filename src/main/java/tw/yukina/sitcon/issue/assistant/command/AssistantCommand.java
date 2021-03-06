@@ -7,9 +7,7 @@ import tw.yukina.sitcon.issue.assistant.constants.Role;
 
 import java.util.List;
 
-public interface Command {
+public interface AssistantCommand {
     public String getCommandName();
     public Role[] getPermissions();
-    public CommandType getCommandType();
-    public SendMessage exec(Update update, List<String> parameter);
 }
