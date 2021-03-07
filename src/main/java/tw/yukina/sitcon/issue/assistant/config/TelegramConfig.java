@@ -17,7 +17,7 @@ public class TelegramConfig extends TelegramLongPollingBot {
     @Value("${telegram.username}")
     private String telegramUsername;
 
-    private TelegramManager telegramManager;
+    private final TelegramManager telegramManager;
 
     public TelegramConfig(TelegramManager telegramManager){
         this.telegramManager = telegramManager;
