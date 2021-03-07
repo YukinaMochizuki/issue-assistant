@@ -1,24 +1,29 @@
-package tw.yukina.sitcon.issue.assistant.command.system;
+package tw.yukina.sitcon.issue.assistant.command.system.user;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.objects.Update;
+import org.springframework.stereotype.Component;
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import tw.yukina.sitcon.issue.assistant.command.AbstractAssistantCommand;
 import tw.yukina.sitcon.issue.assistant.command.AssistantCommand;
-import tw.yukina.sitcon.issue.assistant.constants.CommandType;
 import tw.yukina.sitcon.issue.assistant.constants.Role;
 import tw.yukina.sitcon.issue.assistant.entity.account.User;
 import tw.yukina.sitcon.issue.assistant.repository.UserRepository;
 
 import java.util.List;
 
-public class AddUser implements AssistantCommand {
+@Component
+@Command(name = "user", subcommands = {CommandLine.HelpCommand.class, addUser.class})
+@Getter
+public class UserCommand extends AbstractAssistantCommand {
 
     @Autowired
     private UserRepository userRepository;
 
     @Override
     public String getCommandName() {
-        return "addUser";
+        return "user";
     }
 
     @Override
@@ -26,11 +31,7 @@ public class AddUser implements AssistantCommand {
         return new Role[]{Role.ADMIN};
     }
 
-//    @Override
-//    public CommandType getCommandType() {
-//        return CommandType.COMMAND;
-//    }
-//
+
 //    @Override
 //    public SendMessage exec(Update update, List<String> parameter) {
 //
@@ -42,9 +43,6 @@ public class AddUser implements AssistantCommand {
 //
 //        if(parameter.get(1).compareTo("admin") == 0) user.setRole(Role.ADMIN);
 //        if(parameter.get(1).compareTo("member") == 0) user.setRole(Role.MEMBER);
-//
-//
-//
 //        return null;
 //    }
 }

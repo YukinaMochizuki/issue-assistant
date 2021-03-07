@@ -9,6 +9,5 @@ import java.util.Set;
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByGitLabUserId(int username);
     User findByTelegramUserId(int username);
-    User findByChatId(Long chatId);
     Set<User> findAllByRole(Role role);
 }

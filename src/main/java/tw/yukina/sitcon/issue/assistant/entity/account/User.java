@@ -24,13 +24,10 @@ public class User extends AbstractEntity {
     @Column(unique = true)
     private int telegramUserId;
 
-    @NotNull
     @Column(unique = true)
     private int gitLabUserId;
 
     @NotNull
     private Role role;
 
-    @Column(unique = true)
-    private Long chatId;
 }
