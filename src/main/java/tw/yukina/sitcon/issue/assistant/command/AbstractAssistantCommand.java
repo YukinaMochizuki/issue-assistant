@@ -11,7 +11,7 @@ import tw.yukina.sitcon.issue.assistant.config.TelegramConfig;
 @Command(mixinStandardHelpOptions = true)
 @Getter
 public abstract class AbstractAssistantCommand implements AssistantCommand {
-    @Option(required = true, names = {"--ChatId"}, description = "Valid values: ${COMPLETION-CANDIDATES}")
+    @Option(hidden = true, required = true, names = {"--ChatId"}, description = "Valid values: ${COMPLETION-CANDIDATES}")
     private int chatId;
 
     @Lazy
