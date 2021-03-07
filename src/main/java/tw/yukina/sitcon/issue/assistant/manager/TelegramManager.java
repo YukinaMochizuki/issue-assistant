@@ -93,7 +93,9 @@ public class TelegramManager {
                     parameter.add(1, String.valueOf(update.getMessage().getFrom().getId()));
                     String[] args = parameter.toArray(new String[0]);
 
-                    new CommandLine(assistantCommand).setOut(writer).setErr(writer).execute(args);
+                    new CommandLine(assistantCommand).setOut(writer).setErr(writer)
+                            .setCaseInsensitiveEnumValuesAllowed(true)
+                            .setUsageHelpWidth(100).execute(args);
 
                     String result = out.toString();
                     if (!result.isEmpty())

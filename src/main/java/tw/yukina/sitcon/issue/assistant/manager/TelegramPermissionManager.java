@@ -30,7 +30,7 @@ public class TelegramPermissionManager {
         User user = userRepository.findByTelegramUserId(userId);
 
         if(userId == adminUserId)return true;
-        if(Arrays.stream(assistantCommand.getPermissions()).anyMatch(Role.Guest::equals))return true;
+        if(Arrays.stream(assistantCommand.getPermissions()).anyMatch(Role.GUEST::equals))return true;
 
         if(user == null)return false;
         else for(Role role: assistantCommand.getPermissions()) if(user.getRole() == role)return true;
