@@ -37,6 +37,10 @@ public class TelegramManager {
     @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
     private HelpCommand helpCommand;
 
+    @Autowired
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    private TelegramUserInfoManager telegramUserInfoManager;
+
     public TelegramManager(Set<AbstractAssistantCommand> assistantCommands, TelegramPermissionManager telegramPermissionManager) {
         this.assistantCommands = assistantCommands;
         this.telegramPermissionManager = telegramPermissionManager;
@@ -84,6 +88,8 @@ public class TelegramManager {
 
                 if(update.getMessage().getChat().isUserChat() &&
                         telegramPermissionManager.checkUser(update.getMessage().getFrom().getId(), assistantCommand)) {
+
+                    telegramUserInfoManager.input(update);
 
                     StringWriter out = new StringWriter();
                     PrintWriter writer = new PrintWriter(out);

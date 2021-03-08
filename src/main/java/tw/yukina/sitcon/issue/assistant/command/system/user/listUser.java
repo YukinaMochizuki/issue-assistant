@@ -1,7 +1,5 @@
 package tw.yukina.sitcon.issue.assistant.command.system.user;
 
-import picocli.CommandLine.Option;
-import picocli.CommandLine.ParentCommand;
 import picocli.CommandLine.Command;
 import tw.yukina.sitcon.issue.assistant.command.AbstractSubCommand;
 import tw.yukina.sitcon.issue.assistant.entity.account.User;

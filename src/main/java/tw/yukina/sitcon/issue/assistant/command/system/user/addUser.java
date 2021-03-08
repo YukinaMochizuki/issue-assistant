@@ -1,5 +1,6 @@
 package tw.yukina.sitcon.issue.assistant.command.system.user;
 
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Command;
 import tw.yukina.sitcon.issue.assistant.command.AbstractSubCommand;
@@ -18,6 +19,9 @@ public class addUser extends AbstractSubCommand implements Runnable{
     @Parameters(index = "2", paramLabel = "<role>", description = "Valid values: ${COMPLETION-CANDIDATES}")
     private Role role;
 
+    @Option(names = {"-gid", "--GitLabUserId"}, paramLabel = "<GitLabUserId>")
+    private int gitLabId;
+
     @Override
     public void run() {
         if(userCommand.getUserRepository().findByName(name) != null){
@@ -26,12 +30,16 @@ public class addUser extends AbstractSubCommand implements Runnable{
         }else if(userCommand.getUserRepository().findByTelegramUserId(userId) != null){
             userCommand.sendMessageToChatId("User id "+ userId + " already in the database");
             return;
+        }else if(gitLabId != 0 && userCommand.getUserRepository().findByGitLabUserId(gitLabId) != null){
+            userCommand.sendMessageToChatId("GitLab id "+ gitLabId + " already in the database");
+            return;
         }
 
         User user = new User();
         user.setName(name);
         user.setTelegramUserId(userId);
         user.setRole(role);
+        user.setGitLabUserId(gitLabId);
 
         userCommand.getUserRepository().save(user);
         userCommand.sendMessageToChatId("User "+ name + " has been saved to the database");

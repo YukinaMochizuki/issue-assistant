@@ -7,6 +7,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import tw.yukina.sitcon.issue.assistant.command.AbstractAssistantCommand;
 import tw.yukina.sitcon.issue.assistant.constants.Role;
+import tw.yukina.sitcon.issue.assistant.repository.UserCacheRepository;
 import tw.yukina.sitcon.issue.assistant.repository.UserRepository;
 
 @Component
@@ -17,6 +18,9 @@ public class UserCommand extends AbstractAssistantCommand {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserCacheRepository userCacheRepository;
 
     @Override
     public String getCommandName() {
