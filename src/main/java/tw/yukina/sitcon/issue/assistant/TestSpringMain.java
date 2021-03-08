@@ -13,6 +13,11 @@ import tw.yukina.sitcon.issue.assistant.command.AssistantCommand;
 import tw.yukina.sitcon.issue.assistant.command.system.HelpCommand;
 import tw.yukina.sitcon.issue.assistant.command.system.TestPicocliCommand;
 import tw.yukina.sitcon.issue.assistant.config.TelegramConfig;
+import tw.yukina.sitcon.issue.assistant.constants.Role;
+import tw.yukina.sitcon.issue.assistant.entity.GitLabWebhookFilter;
+import tw.yukina.sitcon.issue.assistant.entity.account.User;
+import tw.yukina.sitcon.issue.assistant.repository.HookFilterRepository;
+import tw.yukina.sitcon.issue.assistant.repository.UserRepository;
 import tw.yukina.sitcon.issue.assistant.util.MessageSupplier;
 
 import java.io.*;
@@ -33,8 +38,10 @@ public class TestSpringMain {
     TelegramConfig telegramConfig;
 
     @Autowired
-    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
-    private HelpCommand helpCommand;
+    private HookFilterRepository hookFilterRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -44,6 +51,22 @@ public class TestSpringMain {
 
     @EventListener
     public void onApplicationStart(ApplicationReadyEvent applicationReadyEvent){
-        telegramConfig.sendMessage(MessageSupplier.getMarkdownFormatBuilder().text("test").chatId("240322569").build());
+        telegramConfig.sendMessage(MessageSupplier.getMarkdownFormatBuilder().text("test\ntest2").chatId("240322569").build());
+
+        User user = new User();
+        user.setTelegramUserId(240322569);
+        user.setRole(Role.ADMIN);
+        user.setName("Yukina");
+
+        userRepository.save(user);
+
+        GitLabWebhookFilter gitLabWebhookFilter = GitLabWebhookFilter.builder()
+                .objectKind("issue")
+                .action("update")
+                .label("To Do")
+                .user(userRepository.findByName("Yukina"))
+                .build();
+
+        hookFilterRepository.save(gitLabWebhookFilter);
     }
 }
