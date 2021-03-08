@@ -48,7 +48,7 @@ public class AuthManager {
         int telegramUserId = userRepository.findByName(username).getTelegramUserId();
         SendMessage.SendMessageBuilder sendMessageBuilder = SendMessage.builder();
         sendMessageBuilder.chatId(String.valueOf(telegramUserId))
-                .text("Your temporary Issue Assistant login code is \"" + tempPassword + "\"");
+                .text("Your temporary Issue Assistant login code is \"" + tempPassword + "\", It will expire after 30 seconds");
 
         userAuth.put(username, new TempPasswordCode(storedEncodePassword));
         telegramConfig.sendMessage(sendMessageBuilder.build());
@@ -72,6 +72,6 @@ public class AuthManager {
     }
 
     private boolean checkIsExpired(TempPasswordCode tempPasswordCode){
-        return tempPasswordCode.getCreatedDateTime().isBefore(LocalDateTime.now().minusMinutes(5));
+        return tempPasswordCode.getCreatedDateTime().isBefore(LocalDateTime.now().minusSeconds(30));
     }
 }
