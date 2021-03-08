@@ -35,10 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String LOGOUT_SUCCESS_URL = "/login";
 
     @Autowired
-    private UserDetailsServiceManager userDetailsServiceManager;
-
-    @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder auth, UserDetailsServiceManager userDetailsServiceManager) throws Exception {
         auth.userDetailsService(userDetailsServiceManager);
     }
 
@@ -126,16 +123,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
-//    @Bean
-//    @Override
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user =
-//                User.withUsername("user")
-//                        .password("{noop}password")
-//                        .roles("USER")
-//                        .build();
-//
-//        return new InMemoryUserDetailsManager(user);
-////        return userDetailsServiceManager;
-//    }
 }

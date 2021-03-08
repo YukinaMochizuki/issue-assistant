@@ -1,5 +1,7 @@
 package tw.yukina.sitcon.issue.assistant.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,11 +13,14 @@ import tw.yukina.sitcon.issue.assistant.repository.UserRepository;
 public class UserDetailsServiceManager implements UserDetailsService {
 
     private final UserRepository userRepository;
-    private final AuthManager authManager;
 
-    public UserDetailsServiceManager(UserRepository userRepository, AuthManager authManager) {
+    @Lazy
+    @Autowired
+    @SuppressWarnings("SpringJavaAutowiredFieldsWarningInspection")
+    private AuthManager authManager;
+
+    public UserDetailsServiceManager(UserRepository userRepository) {
         this.userRepository = userRepository;
-        this.authManager = authManager;
     }
 
     @Override
