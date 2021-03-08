@@ -5,11 +5,9 @@ import tw.yukina.sitcon.issue.assistant.constants.WebhookAction;
 import tw.yukina.sitcon.issue.assistant.entity.account.Group;
 import tw.yukina.sitcon.issue.assistant.entity.account.User;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Entity
 @Getter

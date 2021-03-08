@@ -3,7 +3,6 @@ package tw.yukina.sitcon.issue.assistant.service;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.User;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import tw.yukina.sitcon.issue.assistant.util.MessageSupplier;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
-import java.util.function.Consumer;
 
 @Service
 public class NotificationService {

@@ -1,6 +1,5 @@
 package tw.yukina.sitcon.issue.assistant.config;
 
-import lombok.SneakyThrows;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.IssuesApi;

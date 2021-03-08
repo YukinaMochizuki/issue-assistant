@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import picocli.CommandLine.Command;
 import tw.yukina.sitcon.issue.assistant.command.AbstractAssistantCommand;
 import tw.yukina.sitcon.issue.assistant.constants.Role;
-import tw.yukina.sitcon.issue.assistant.manager.TelegramUserInfoManager;
+import tw.yukina.sitcon.issue.assistant.manager.telegram.TelegramUserInfoManager;
 
 @Component
 @Command(name = "start", description = "Update your user info")
@@ -16,7 +16,6 @@ public class Start extends AbstractAssistantCommand implements Runnable{
 
     @Override
     public void run() {
-        sendMessageToChatId("Update your user info...");
         sendMessageToChatId("Your telegram user id is " + getChatId());
         sendMessageToChatId("If you want to get some help, please send /help for me");
     }
@@ -28,6 +27,6 @@ public class Start extends AbstractAssistantCommand implements Runnable{
 
     @Override
     public Role[] getPermissions() {
-        return new Role[]{Role.ADMIN, Role.MEMBER};
+        return new Role[]{Role.GUEST};
     }
 }

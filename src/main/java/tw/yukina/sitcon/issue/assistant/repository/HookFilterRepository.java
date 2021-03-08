@@ -7,8 +7,6 @@ import tw.yukina.sitcon.issue.assistant.entity.GitLabWebhookFilter;
 import tw.yukina.sitcon.issue.assistant.entity.account.Group;
 import tw.yukina.sitcon.issue.assistant.entity.account.User;
 
-import javax.persistence.ElementCollection;
-import javax.validation.constraints.NotNull;
 import java.util.Set;
 
 @Repository

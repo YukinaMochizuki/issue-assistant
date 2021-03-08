@@ -19,7 +19,7 @@ import tw.yukina.sitcon.issue.assistant.service.NotificationService;
 @RequestMapping(path = "webhook")
 public class GitLabWebhook {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private NotificationService notificationService;

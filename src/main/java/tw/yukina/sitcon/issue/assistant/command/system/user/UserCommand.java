@@ -12,7 +12,7 @@ import tw.yukina.sitcon.issue.assistant.repository.UserRepository;
 
 @Component
 @Command(name = "/user", subcommands = {CommandLine.HelpCommand.class, addUser.class, findUser.class,
-        listUser.class, delUser.class, findUserById.class})
+        listUser.class, delUser.class})
 @Getter
 public class UserCommand extends AbstractAssistantCommand {
 
