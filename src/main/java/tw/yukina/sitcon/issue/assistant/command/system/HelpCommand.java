@@ -7,7 +7,7 @@ import tw.yukina.sitcon.issue.assistant.constants.Role;
 import tw.yukina.sitcon.issue.assistant.util.MessageSupplier;
 
 @Component
-@Command(name = "help", version = "help 4.0")
+@Command(name = "help")
 public class HelpCommand extends AbstractAssistantCommand implements Runnable{
 
     @Override

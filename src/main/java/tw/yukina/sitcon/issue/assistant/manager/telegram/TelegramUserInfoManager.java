@@ -1,4 +1,4 @@
-package tw.yukina.sitcon.issue.assistant.manager;
+package tw.yukina.sitcon.issue.assistant.manager.telegram;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -41,8 +41,8 @@ public class TelegramUserInfoManager {
         String lastName = update.getMessage().getFrom().getLastName();
 
         StringBuilder stringBuilder = new StringBuilder();
-        if(firstName != null)stringBuilder.append(firstName);
-        if(lastName != null)stringBuilder.append(lastName);
+        if(firstName != null) stringBuilder.append(firstName);
+        if(lastName != null)stringBuilder.append(" ").append(lastName);
 
         UserCache.UserCacheBuilder userCacheBuilder = UserCache.builder()
                 .user(user)

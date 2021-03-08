@@ -6,7 +6,7 @@ import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
-import tw.yukina.sitcon.issue.assistant.manager.TelegramManager;
+import tw.yukina.sitcon.issue.assistant.manager.telegram.TelegramManager;
 
 @Component
 public class TelegramConfig extends TelegramLongPollingBot {
