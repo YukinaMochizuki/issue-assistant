@@ -7,9 +7,11 @@ import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.contextmenu.MenuItem;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.menubar.MenuBar;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -22,8 +24,10 @@ import com.vaadin.flow.server.PWA;
 import com.vaadin.flow.theme.Theme;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import tw.yukina.sitcon.issue.assistant.views.helloworld.BasicSetting;
-import tw.yukina.sitcon.issue.assistant.views.creditcard.NewNotificationView;
+import tw.yukina.sitcon.issue.assistant.views.dashboard.DashboardView;
+import tw.yukina.sitcon.issue.assistant.views.playground.notification.NewItemView;
+import tw.yukina.sitcon.issue.assistant.views.playground.cardlist.CardListView;
+import tw.yukina.sitcon.issue.assistant.views.playground.helloworld.BasicSetting;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 /**
@@ -31,14 +35,18 @@ import com.vaadin.flow.theme.lumo.Lumo;
  */
 @JsModule("./styles/shared-styles.js")
 @CssImport("./styles/views/main/main-view.css")
-@PWA(name = "Portal Framework", shortName = "Portal", enableInstallPrompt = false)
+@CssImport(value = "./styles/views/dialog/dialog-overlay.css", themeFor = "vaadin-dialog-overlay")
 @Theme(value = Lumo.class, variant = Lumo.LIGHT)
 public class MainView extends AppLayout {
 
     private final Tabs menu;
+    private final String userName;
     private H1 viewTitle;
 
     public MainView() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        this.userName = auth.getName();
+
         setPrimarySection(Section.DRAWER);
         addToNavbar(true, createHeaderContent());
         menu = createMenu();
@@ -59,13 +67,17 @@ public class MainView extends AppLayout {
         layout.add(viewTitle);
         layout.expand(viewTitle);
 
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        MenuBar menuBar = new MenuBar();
+        MenuItem account = menuBar.addItem(userName);
+        account.getSubMenu().addItem("Edit Profile");
+
         Button logoutButton = new Button("Logout");
         logoutButton.addClickListener((e -> {
             if(getUI().isPresent())getUI().get().getPage().setLocation("/logout");
         }));
 
-        layout.add(auth.getName() + "  ");
+        layout.add();
+        layout.add(menuBar);
         layout.add(logoutButton);
         return layout;
     }
@@ -98,8 +110,15 @@ public class MainView extends AppLayout {
 
     private Component[] createMenuItems() {
         return new Tab[] {
-            createTab("Basic Setting", BasicSetting.class),
-            createTab("New Notification", NewNotificationView.class)
+            createTab("Dashboard", DashboardView.class),
+        };
+    }
+
+    private Component[] createTestMenuItems() {
+        return new Tab[] {
+                createTab("Basic Setting", BasicSetting.class),
+                createTab("New Notification", NewItemView.class),
+                createTab("Test", CardListView.class)
         };
     }
 
