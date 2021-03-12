@@ -1,0 +1,7 @@
+:host([theme~="abstract-dialog"]) [part="overlay"] {
+    overflow: hidden;
+}
+
+:host([theme~="abstract-dialog"]) [part="content"] {
+    padding: 0;
+}
