@@ -13,5 +13,5 @@ public abstract class AbstractSubCommand {
     public boolean usageHelpRequested;
 
     @ParentCommand
-    public UserCommand userCommand;
+    public UserCommand parentCommand;
 }

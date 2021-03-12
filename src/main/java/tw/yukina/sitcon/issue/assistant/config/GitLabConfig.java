@@ -3,6 +3,7 @@ package tw.yukina.sitcon.issue.assistant.config;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.IssuesApi;
+import org.gitlab4j.api.NotesApi;
 import org.gitlab4j.api.models.Project;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +29,11 @@ public class GitLabConfig {
     @Bean
     public IssuesApi getIssuesApi(GitLabApi gitLabApi){
         return gitLabApi.getIssuesApi();
+    }
+
+    @Bean
+    public NotesApi getNoteApu(GitLabApi gitLabApi){
+        return gitLabApi.getNotesApi();
     }
 
     @Bean

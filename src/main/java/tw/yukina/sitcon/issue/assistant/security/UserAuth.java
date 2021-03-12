@@ -51,7 +51,7 @@ public class UserAuth implements UserDetails {
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return authManager.hasTempPassword(username);
+        return true;
     }
 
     @Override

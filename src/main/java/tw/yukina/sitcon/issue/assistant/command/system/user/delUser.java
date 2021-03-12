@@ -13,11 +13,11 @@ public class delUser extends AbstractSubCommand implements Runnable {
 
     @Override
     public void run() {
-        User user = userCommand.getUserRepository().findByName(name);
-        if(user == null)userCommand.sendMessageToChatId("Can not find any user named " + name);
+        User user = parentCommand.getUserRepository().findByName(name);
+        if(user == null) parentCommand.sendMessageToChatId("Can not find any user named " + name);
         else {
-            userCommand.getUserRepository().delete(user);
-            userCommand.sendMessageToChatId("Delete user " + name);
+            parentCommand.getUserRepository().delete(user);
+            parentCommand.sendMessageToChatId("Delete user " + name);
         }
     }
 }

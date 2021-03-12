@@ -63,6 +63,8 @@ public class LoginView extends VerticalLayout implements BeforeEnterObserver {
 
         section = new Section(h2, username);
         add(section, continueButton, login);
+//        login.setVisible(true);
+//        add(login);
     }
 
     private void continueWithUsername(ClickEvent<Button> buttonClickEvent) {

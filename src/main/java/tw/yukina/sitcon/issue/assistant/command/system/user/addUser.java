@@ -24,14 +24,14 @@ public class addUser extends AbstractSubCommand implements Runnable{
 
     @Override
     public void run() {
-        if(userCommand.getUserRepository().findByName(name) != null){
-            userCommand.sendMessageToChatId("User "+ name + " already in the database");
+        if(parentCommand.getUserRepository().findByName(name) != null){
+            parentCommand.sendMessageToChatId("User "+ name + " already in the database");
             return;
-        }else if(userCommand.getUserRepository().findByTelegramUserId(userId) != null){
-            userCommand.sendMessageToChatId("User id "+ userId + " already in the database");
+        }else if(parentCommand.getUserRepository().findByTelegramUserId(userId) != null){
+            parentCommand.sendMessageToChatId("User id "+ userId + " already in the database");
             return;
-        }else if(gitLabId != 0 && userCommand.getUserRepository().findByGitLabUserId(gitLabId) != null){
-            userCommand.sendMessageToChatId("GitLab id "+ gitLabId + " already in the database");
+        }else if(gitLabId != 0 && parentCommand.getUserRepository().findByGitLabUserId(gitLabId) != null){
+            parentCommand.sendMessageToChatId("GitLab id "+ gitLabId + " already in the database");
             return;
         }
 
@@ -41,7 +41,7 @@ public class addUser extends AbstractSubCommand implements Runnable{
         user.setRole(role);
         user.setGitLabUserId(gitLabId);
 
-        userCommand.getUserRepository().save(user);
-        userCommand.sendMessageToChatId("User "+ name + " has been saved to the database");
+        parentCommand.getUserRepository().save(user);
+        parentCommand.sendMessageToChatId("User "+ name + " has been saved to the database");
     }
 }

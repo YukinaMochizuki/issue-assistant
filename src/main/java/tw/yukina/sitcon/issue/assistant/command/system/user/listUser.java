@@ -10,8 +10,8 @@ import java.util.List;
 public class listUser extends AbstractSubCommand implements Runnable{
     @Override
     public void run() {
-        List<User> users = userCommand.getUserRepository().findAll();
-        if(users.isEmpty())userCommand.sendMessageToChatId("Can not find any users in database");
-        else users.forEach(user -> userCommand.sendMessageToChatId(user.getName()));
+        List<User> users = parentCommand.getUserRepository().findAll();
+        if(users.isEmpty()) parentCommand.sendMessageToChatId("Can not find any users in database");
+        else users.forEach(user -> parentCommand.sendMessageToChatId(user.getName()));
     }
 }
