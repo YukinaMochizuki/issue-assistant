@@ -3,17 +3,23 @@ package tw.yukina.sitcon.issue.assistant.service;
 import org.gitlab4j.api.GitLabApi;
 import org.gitlab4j.api.GitLabApiException;
 import org.gitlab4j.api.models.User;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import tw.yukina.sitcon.issue.assistant.config.TelegramConfig;
 import tw.yukina.sitcon.issue.assistant.entity.GitLabWebhookFilter;
+import tw.yukina.sitcon.issue.assistant.entity.Label;
+import tw.yukina.sitcon.issue.assistant.entity.RecentNotification;
 import tw.yukina.sitcon.issue.assistant.repository.HookFilterRepository;
+import tw.yukina.sitcon.issue.assistant.repository.RecentNotificationRepository;
 import tw.yukina.sitcon.issue.assistant.util.MessageSupplier;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -28,25 +34,52 @@ public class NotificationService {
     @Autowired
     private GitLabApi gitLabApi;
 
+    @Autowired
+    private RecentNotificationRepository recentNotificationRepository;
+
     public void gitlabHook(JSONObject json){
 
-        Set<GitLabWebhookFilter> gitLabFilters = hookFilterRepository.findAllByObjectKind(json.getString("object_kind"));
-        if(gitLabFilters == null)return;
+        Set<GitLabWebhookFilter> gitLabFilters = null;
+        if(json.getString("object_kind").equals("issue")){
+            gitLabFilters = hookFilterRepository.findAllByObjectKind("issue");
+            if(gitLabFilters != null){
+                pollingIssueFilter(json, gitLabFilters);
+            }
 
+        }
+        if(json.getString("object_kind").equals("note")){
+            gitLabFilters = hookFilterRepository.findAllByAction("comment");
+            if(gitLabFilters != null){
+                pollingNoteFilter(json, gitLabFilters);
+            }
+        }
+    }
+
+    private void pollingNoteFilter(JSONObject json, Set<GitLabWebhookFilter> gitLabFilters){
+        if(json.getJSONObject("issue") == null)return;
+
+        JSONObject object_attributes = json.getJSONObject("object_attributes");
+        for(GitLabWebhookFilter filter : gitLabFilters) {
+            if(!filter.getLabels().isEmpty()){
+                if(!checkLabel(json.getJSONObject("issue").getJSONArray("labels"), filter))continue;
+            }
+
+            //todo
+
+            System.out.println("Filter active!");
+            System.out.println(filter.toString());
+            activeFilter(filter, json);
+        }
+    }
+
+    private void pollingIssueFilter(JSONObject json, Set<GitLabWebhookFilter> gitLabFilters){
         JSONObject object_attributes = json.getJSONObject("object_attributes");
         for(GitLabWebhookFilter filter : gitLabFilters) {
             try {
                 if(!filterByString(getGLFMethod("getAction"), filter, object_attributes.getString("action")))continue;
-                if(!object_attributes.getJSONArray("labels").isEmpty()){
-                    boolean flag = false;
-                    for(Object o : object_attributes.getJSONArray("labels")){
-                        JSONObject jsonObject = (JSONObject) o;
-                        if(filterByString(getGLFMethod("getLabel"), filter, jsonObject.getString("title"))){
-                            flag = true;
-                            break;
-                        }
-                    }
-                    if(!flag)continue;
+
+                if(!filter.getLabels().isEmpty()){
+                    if(!checkLabel(object_attributes.getJSONArray("labels"), filter))continue;
                 }
 
                 //todo
@@ -60,21 +93,76 @@ public class NotificationService {
         }
     }
 
+    private boolean checkLabel(JSONArray labels, GitLabWebhookFilter filter) {
+        if(labels == null || labels.isEmpty())return false;
+
+        Set<Label> labelsCopy = new HashSet<>(filter.getLabels());
+
+        for(Object o : labels){
+            JSONObject jsonObject = (JSONObject) o;
+
+            labelsCopy.removeIf(label -> filterByString(label.getName(), jsonObject.getString("title")));
+        }
+        return labelsCopy.isEmpty();
+    }
+
     private void activeFilter(GitLabWebhookFilter filter, JSONObject issue){
         if(filter.getUser() != null){
-            sendNotification(filter.getUser().getTelegramUserId(), issue);
+            sendNotification(filter.getUser().getTelegramUserId(), issue, filter);
         }
 
         if(filter.getGroup() != null){
-            sendNotification(filter.getGroup().getChatId(), issue);
+            sendNotification(filter.getGroup().getChatId(), issue, filter);
         }
     }
 
-    private void sendNotification(int chatId, JSONObject issue){
+    private void sendNotification(int chatId, JSONObject issue, GitLabWebhookFilter filter){
+        String message = null;
+
+        if(issue.getString("object_kind").equals("issue")) message = displayIssueInfo(issue);
+        else if(issue.getString("object_kind").equals("note")) message = displayNoteInfo(issue);
+
         SendMessage.SendMessageBuilder sendMessageBuilder = MessageSupplier.getMarkdownFormatBuilder()
-                .text("New notification on GitLab\n" + displayIssueInfo(issue))
+                .text("New notification on GitLab\n" + message)
                 .chatId(String.valueOf(chatId));
         telegramConfig.sendMessage(sendMessageBuilder.build());
+
+//        recentNotificationRepository.save(new RecentNotification(LocalDateTime.now(), message, filter));
+    }
+
+    private String displayNoteInfo(JSONObject issue){
+        JSONObject attributes = issue.getJSONObject("object_attributes");
+        StringBuilder stringBuilder = new StringBuilder();
+
+        stringBuilder.append("Action: ");
+        stringBuilder.append("comment").append(" by ");
+        stringBuilder.append(issue.getJSONObject("user").getString("name"));
+        stringBuilder.append("\n------\n\n");
+
+        stringBuilder.append("[#").append(issue.getJSONObject("issue").getInt("iid")).append("](")
+                .append(attributes.getString("url")).append(")");
+        stringBuilder.append("\n");
+
+        stringBuilder.append("Title: ").append(issue.getJSONObject("issue").getString("title"));
+        stringBuilder.append("\n");
+
+        stringBuilder.append("New Comment:\n").append(attributes.getString("description"));
+        stringBuilder.append("\n");
+
+        stringBuilder.append("Labels: ");
+        if (!issue.getJSONObject("issue").getJSONArray("labels").isEmpty()){
+            boolean doFirst = true;
+            for(Object o : issue.getJSONObject("issue").getJSONArray("labels")){
+                JSONObject jsonObject = (JSONObject) o;
+                if(!doFirst) stringBuilder.append(", ");
+
+                stringBuilder.append(jsonObject.getString("title"));
+                doFirst = false;
+            }
+        }
+        stringBuilder.append("\n");
+
+        return stringBuilder.toString();
     }
 
     private String displayIssueInfo(JSONObject issue){
@@ -86,11 +174,11 @@ public class NotificationService {
         stringBuilder.append(issue.getJSONObject("user").getString("name"));
         stringBuilder.append("\n------\n\n");
 
-        stringBuilder.append("Id: ").append("[#").append(attributes.getInt("iid")).append("](")
+        stringBuilder.append("[#").append(attributes.getInt("iid")).append("](")
                 .append(attributes.getString("url")).append(")");
         stringBuilder.append("\n");
 
-        stringBuilder.append("Title:\n").append(attributes.getString("title"));
+        stringBuilder.append("Title: ").append(attributes.getString("title"));
         stringBuilder.append("\n");
 
         stringBuilder.append("Description:\n").append(attributes.getString("description"));
@@ -126,10 +214,9 @@ public class NotificationService {
             }
         } else stringBuilder.append("none");
         stringBuilder.append("\n");
-
-
         return stringBuilder.toString();
     }
+
 
     private Method getGLFMethod(String name) throws NoSuchMethodException {
         return GitLabWebhookFilter.class.getMethod(name);
@@ -142,6 +229,13 @@ public class NotificationService {
 
             if(s.equals(""))return true;
             else return s.equals(jsonString);
+        } else return true;
+    }
+
+    private boolean filterByString(String filterString, String jsonString) {
+        if(filterString != null){
+            if(filterString.equals(""))return true;
+            else return filterString.equals(jsonString);
         } else return true;
     }
 
@@ -167,4 +261,13 @@ public class NotificationService {
     private void findFilter(JSONObject json){
 
     }
+
+    public List<RecentNotification> getRecentNotificationList() {
+        return recentNotificationRepository.findAll();
+    }
+
+    public long getFilterCount(){
+        return hookFilterRepository.count();
+    }
+
 }

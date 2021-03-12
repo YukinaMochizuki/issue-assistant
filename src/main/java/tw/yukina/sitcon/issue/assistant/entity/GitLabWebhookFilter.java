@@ -1,13 +1,15 @@
 package tw.yukina.sitcon.issue.assistant.entity;
 
 import lombok.*;
+import org.hibernate.annotations.Type;
 import tw.yukina.sitcon.issue.assistant.constants.WebhookAction;
 import tw.yukina.sitcon.issue.assistant.entity.account.Group;
 import tw.yukina.sitcon.issue.assistant.entity.account.User;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -15,19 +17,28 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@SuppressWarnings("JpaDataSourceORMInspection")
 public class GitLabWebhookFilter extends AbstractEntity{
 
     @NotNull
-    private String objectKind; // issue, note(plan)
+    @Column(unique = true)
+    private String name;
+
+    @NotNull
+    private String objectKind; // issue
     private String eventType; //todo
     private int objectId; //todo
     private int authorId; //todo
 
     @NotNull
-    private String action; // open, update, close, reopen
+    private String action; // open, update, close, reopen, comment
     private String updateType; // changes/assignees  or changes/labels
 
-    private String label;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "GitLabWebhookFilter_labels",
+            joinColumns = { @JoinColumn(name = "GitLabWebhookFilter_id") },
+            inverseJoinColumns = { @JoinColumn(name = "Label_id") })
+    private Set<Label> labels = new HashSet<>();
     private int assigneeId; //todo
 
     @OneToOne

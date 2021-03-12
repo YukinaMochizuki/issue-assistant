@@ -12,5 +12,5 @@ public class AbstractEntity {
     @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @NotNull
-    private String id;
+    private Long id;
 }
