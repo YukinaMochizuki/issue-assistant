@@ -36,6 +36,16 @@ public class TelegramUserInfoManager {
         if(userCacheRepository.findByUser(user) == null) updateCache(update, user);
     }
 
+    public void updateCache(User user){
+        Integer userId = user.getGitLabUserId();
+
+        Optional<Update> findUpdate = updates.stream()
+                .filter(update1 -> userId.equals(update1.getMessage().getFrom().getId()))
+                .findAny();
+
+        findUpdate.ifPresent(value -> updateCache(value, user));
+    }
+
     public void updateCache(Update update, User user){
         String firstName = update.getMessage().getFrom().getFirstName();
         String lastName = update.getMessage().getFrom().getLastName();
