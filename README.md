@@ -46,4 +46,4 @@ I was very excited about writing web app UI with fully OOP, so this project was 
 
 ## Some implementation details
 - All of the CLI like command was written in [this package](https://github.com/YukinaMochizuki/issue-assistant/tree/master/src/main/java/tw/yukina/sitcon/issue/assistant/command) as a spring component.
-- All of the web app view was written in [this package](https://github.com/YukinaMochizuki/issue-assistant/tree/master/src/main/java/tw/yukina/sitcon/issue/assistant/views)
+- All of the web app view was written in [this package](https://github.com/YukinaMochizuki/issue-assistant/tree/master/src/main/java/tw/yukina/sitcon/issue/assistant/views).
