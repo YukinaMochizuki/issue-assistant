@@ -8,7 +8,7 @@ This is an experimental project focused on practice Vaadin platform, GitLab Webh
 >
 > Your apps run on the server and handle all communication automatically and securely. Building on the strong Java ecosystem, Flow works with your favorite IDEs, tools, and libraries.
 
-I was very excited about writing web app UI with fully OOP, so this project was born to practice this
+I was very excited about writing web app UI with fully OOP, so this project was born to practice this.
 
 ## General Information
 - Project status: **Forward-looking**, it means that the project may be changed or stopped at any time due to my learning policy.
@@ -34,3 +34,12 @@ I was very excited about writing web app UI with fully OOP, so this project was 
   - [gson](https://github.com/google/gson) - Used for deserialize GitLab Webhook responses
 
 
+## Demo and screenshot
+[![](https://raw.githubusercontent.com/YukinaMochizuki/issue-assistant/master/img/2021-06-24%2015-47-23%20720p.gif)](https://raw.githubusercontent.com/YukinaMochizuki/issue-assistant/master/img/2021-06-24%2015-47-23%20720p.gif)
+
+[1080p version](https://github.com/YukinaMochizuki/issue-assistant/blob/master/img/2021-06-24%2015-47-23%201080p.gif)
+
+> The `Telegram UserId` is actually a typo, its correct name should be `chat_id`.
+
+![](https://i.imgur.com/eMhlHnp.png)
+![](https://i.imgur.com/ru46kpX.png)
