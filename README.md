@@ -2,7 +2,7 @@
 
 This is an experimental project focused on practice Vaadin platform, GitLab Webhook and Spring Security.
 
-**From Vaadin official website:**
+**From [Vaadin official website](https://vaadin.com):**
 
 > Vaadin Flow is a web framework that allows you to write UI 100% in Java without getting bogged down in JS, HTML, and CSS. If you prefer, you can also create layouts in HTML or with a visual designer. 
 >
@@ -37,9 +37,13 @@ I was very excited about writing web app UI with fully OOP, so this project was 
 ## Demo and screenshot
 [![](https://raw.githubusercontent.com/YukinaMochizuki/issue-assistant/master/img/2021-06-24%2015-47-23%20720p.gif)](https://raw.githubusercontent.com/YukinaMochizuki/issue-assistant/master/img/2021-06-24%2015-47-23%20720p.gif)
 
-[1080p version](https://github.com/YukinaMochizuki/issue-assistant/blob/master/img/2021-06-24%2015-47-23%201080p.gif)
-
 > The `Telegram UserId` is actually a typo, its correct name should be `chat_id`.
+
+[1080p version](https://github.com/YukinaMochizuki/issue-assistant/blob/master/img/2021-06-24%2015-47-23%201080p.gif)
 
 ![](https://i.imgur.com/eMhlHnp.png)
 ![](https://i.imgur.com/ru46kpX.png)
+
+## Some implementation details
+- All of the CLI like command was written in [this package](https://github.com/YukinaMochizuki/issue-assistant/tree/master/src/main/java/tw/yukina/sitcon/issue/assistant/command) as a spring component.
+- All of the web app view was written in [this package](https://github.com/YukinaMochizuki/issue-assistant/tree/master/src/main/java/tw/yukina/sitcon/issue/assistant/views)
