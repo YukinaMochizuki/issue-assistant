@@ -1,6 +1,6 @@
 # Issue Assistant
 
-This is an experimental project focused on practice Vaadin platform, GitLab Webhook and Spring Security.
+This is an experimental project focuses on practicing Vaadin platform, GitLab Webhook and Spring Security.
 
 **From [Vaadin official website](https://vaadin.com):**
 
@@ -8,7 +8,7 @@ This is an experimental project focused on practice Vaadin platform, GitLab Webh
 >
 > Your apps run on the server and handle all communication automatically and securely. Building on the strong Java ecosystem, Flow works with your favorite IDEs, tools, and libraries.
 
-I was very excited about writing web app UI with fully OOP, so this project was born to practice this.
+I am very excited about writing web app UI with fully OOP, so this project was born to practice this.
 
 ## General Information
 - Project status: **Forward-looking**, it means that the project may be changed or stopped at any time due to my learning policy.
